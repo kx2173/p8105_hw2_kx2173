@@ -206,5 +206,7 @@ plot_final =
        x = "The rank in popularity of the certain name",
        y = "Number of children with a name"
        )
+
+plot_final
 ```
 
