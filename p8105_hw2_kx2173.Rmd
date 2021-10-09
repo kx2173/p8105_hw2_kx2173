@@ -15,7 +15,7 @@ library(dplyr)
 
 Read and clean the Mr. Trash Wheel sheet.
 
-```{r trash_wheel}
+```{r trash_wheel, message = FALSE}
 trash_wheel = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", 
                          sheet = "Mr. Trash Wheel", 
                          range = "A2:N535")%>%
@@ -26,7 +26,7 @@ trash_wheel = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
 
 Read and clean precipitation data for 2018 and 2019.
 
-```{r combined_precipitation}
+```{r combined_precipitation, message = FALSE}
 precipitation_2018 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", 
                          sheet = "2018 Precipitation", 
                          range = "A2:B14")%>%
@@ -66,7 +66,7 @@ The median number of sports balls in a dumpster in 2019 is `r median(pull(filter
 
 First, read and clean data in pols_month.
 
-```{r pols_month}
+```{r pols_month, message = FALSE}
 pols_month = read_csv("./fivethirtyeight_datasets/pols-month.csv")%>%
   janitor::clean_names()%>%
   separate(mon, c("year", "month", "day"))%>%
@@ -82,7 +82,7 @@ relocate(year, month, president)
 
 Second, clean the data snp.csv as well, arrange according to year and month, and organize columns.
 
-```{r snp}
+```{r snp, message = FALSE}
 snp = read_csv("./fivethirtyeight_datasets/snp.csv")%>%
   janitor::clean_names()%>%
   mutate(date = lubridate::mdy(date))%>%
@@ -100,7 +100,7 @@ snp = read_csv("./fivethirtyeight_datasets/snp.csv")%>%
 
 Third, read and tidy the unemployment data.
 
-```{r unemployment_tidy}
+```{r unemployment_tidy, message = FALSE}
 unemployment_data = read_csv("./fivethirtyeight_datasets/unemployment.csv")%>%
   janitor::clean_names()
 colnames(unemployment_data) = c("year","January","February","March","April","May","June","July","August","September","October","November","December")
@@ -118,21 +118,29 @@ unemployment_tidy =
 
 Now, join the datasets.
 
-```{r}
+```{r join, message = FALSE}
 pols_snp = left_join(pols_month, snp, by = c("year", "month"))
 
 pols_snp_unemp = left_join(pols_snp, unemployment_tidy, by = c("year", "month"))
 ```
 
 A short paragraph about these data sets.
+In our pols_month data set, it has `r ncol(pols_month)` variables with the name of `r names(pols_month)`, and has `r nrow(pols_month)` observations. It shows the number of national politicians who are democratic or republican at any given time. The time period is from `r min(pull(pols_month, year))` to `r max(pull(pols_month, year))`.
 
+In snp data set, it has `r ncol(snp)` variables including `r names(snp)`, and has `r nrow(snp)` observations. It shows Standard & Poor’s stock market index (S&P). The time period is from `r min(pull(snp, year))` to `r max(pull(snp, year))`.
+
+In unemployment data set, it has `r ncol(unemployment_tidy)` variables with the name of `r names(unemployment_tidy)`, and it has `r nrow(unemployment_tidy)` observations. Time range is between `r min(pull(unemployment_tidy, year))` to `r max(pull(unemployment_tidy, year))`.
+
+In the first combined data set, it combined pols_month data and snp data, with dimension `r nrow(pols_snp)` and `r ncol(pols_snp)`. Variables include `r names(pols_snp)`. Time period is from `r min(pull(pols_snp, year))` to `r max(pull(pols_snp, year))`.
+
+Another data set contains pols_month data, snp data and unemployment data all together, with `r nrow(pols_snp_unemp)` observations and `r ncol(pols_snp_unemp)` variables. Variables include `r names(pols_snp_unemp)`. Time period is from `r min(pull(pols_snp_unemp, year))` to `r max(pull(pols_snp_unemp, year))`.
 
 
 ## Problem 3
 
 load and tidy data.
 
-```{r baby_tidy}
+```{r baby_tidy, message = FALSE}
 baby_name = read_csv("./baby_names/Popular_Baby_Names.csv")%>%
   janitor::clean_names()%>%
   mutate(
@@ -153,7 +161,7 @@ baby_tidy = baby_name[!duplicated(baby_name), ]%>%
 
 Produce a table showing rank in popularity of the name "Olivia" as a female baby name.
 
-```{r olivia_rank}
+```{r olivia_rank, message = FALSE}
 olivia_rank = baby_tidy%>%
   filter(gender == "FEMALE", childs_first_name == "olivia")%>%
   pivot_wider(
@@ -168,7 +176,7 @@ knitr::kable(olivia_rank, caption = "Rank in popularity of the name Olivia as a 
 
 Produce a similar table showing the most popular name among male children
 
-```{r popular_male_name}
+```{r popular_male_name, message = FALSE}
 popular_male_name = baby_tidy%>%
   filter(gender == "MALE", rank == "1")%>%
   pivot_wider(
@@ -185,7 +193,7 @@ knitr::kable(popular_male_name, caption = "The most popular name among male chil
 
 Finally, produced a scatter plot showing the number of children with a name against the rank in popularity of that name.
 
-```{r}
+```{r white_male_name, message = FALSE}
 white_male_name = baby_tidy%>%
   filter(gender == "MALE",
          ethnicity == "WHITE NON HISPANIC",
