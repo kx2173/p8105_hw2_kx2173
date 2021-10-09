@@ -8,6 +8,7 @@ output: github_document
 ```{r, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(readxl)
+library(dplyr)
 ```
 
 ## Problem 1
@@ -42,7 +43,9 @@ precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xls
 
 combined_precipitation = 
   bind_rows(precipitation_2018, precipitation_2019)%>%
-  mutate(month = month.name[month])
+  mutate(
+    month = as.integer(month),
+    month = month.name[month])
 
 class(pull(combined_precipitation, month)) # To check if "month" variable is a character variable.
 ```
@@ -53,3 +56,22 @@ In Trash Wheel data, it has key variables: `r names(trash_wheel)`, and has `r nr
 In precipitation data for 2018 and 2019, it has variables: `r names(combined_precipitation)`, and total number of observation is `r nrow(combined_precipitation)`.
 The total precipitation in 2018 is `r sum(pull(precipitation_2018, total))`.
 The median number of sports balls in a dumpster in 2019 is `r median(pull(filter(trash_wheel, year == 2019), sports_balls))`.
+
+
+## Problem 2
+
+First, read and clean data in pols_month.
+
+```{r}
+pols_month = read_csv("./fivethirtyeight_datasets/pols-month.csv")%>%
+  janitor::clean_names()%>%
+  separate(mon, c("year", "month", "day"))%>%
+  mutate(
+    month = as.integer(month),
+    month = month.name[month],
+    president = select(., prez_gop:rep_dem)%>%
+    rowSums() - prez_dem - prez_gop
+    )%>%
+  select(- day)
+```
+
