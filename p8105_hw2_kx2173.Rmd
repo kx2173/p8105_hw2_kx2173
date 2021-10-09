@@ -14,7 +14,7 @@ library(readxl)
 
 Read and clean the Mr. Trash Wheel sheet.
 
-```{r}
+```{r trash_wheel}
 trash_wheel = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", 
                          sheet = "Mr. Trash Wheel", 
                          range = "A2:N535")%>%
@@ -23,3 +23,33 @@ trash_wheel = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
   mutate(sports_balls = round(sports_balls))
 ```
 
+Read and clean precipitation data for 2018 and 2019.
+
+```{r combined_precipitation}
+precipitation_2018 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", 
+                         sheet = "2018 Precipitation", 
+                         range = "A2:B14")%>%
+  janitor::clean_names()%>%
+  mutate(year = c("2018","2018","2018","2018","2018","2018","2018","2018","2018","2018","2018","2018"))
+
+
+
+precipitation_2019 = read_excel("data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx", 
+                         sheet = "2019 Precipitation", 
+                         range = "A2:B14")%>%
+  janitor::clean_names()%>%
+  mutate(year = c("2019","2019","2019","2019","2019","2019","2019","2019","2019","2019","2019","2019"))
+
+combined_precipitation = 
+  bind_rows(precipitation_2018, precipitation_2019)%>%
+  mutate(month = month.name[month])
+
+class(pull(combined_precipitation, month)) # To check if "month" variable is a character variable.
+```
+
+Write a paragraph about data:
+
+In Trash Wheel data, it has key variables: `r names(trash_wheel)`, and has `r nrow(trash_wheel)` observations.
+In precipitation data for 2018 and 2019, it has variables: `r names(combined_precipitation)`, and total number of observation is `r nrow(combined_precipitation)`.
+The total precipitation in 2018 is `r sum(pull(precipitation_2018, total))`.
+The median number of sports balls in a dumpster in 2019 is `r median(pull(filter(trash_wheel, year == 2019), sports_balls))`.
