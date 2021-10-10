@@ -67,7 +67,7 @@ First, read and clean data in pols_month.
 ```{r pols_month, message = FALSE}
 pols_month = read_csv("./fivethirtyeight_datasets/pols-month.csv")%>%
   janitor::clean_names()%>%
-  separate(mon, c("year", "month", "day"))%>%
+  separate(mon, into = c("year", "month", "day"))%>%
   mutate(
     year = as.integer(year),
     month = as.integer(month),
@@ -84,7 +84,7 @@ Second, clean the data snp.csv as well, arrange according to year and month, and
 snp = read_csv("./fivethirtyeight_datasets/snp.csv")%>%
   janitor::clean_names()%>%
   mutate(date = lubridate::mdy(date))%>%
-  separate(date, c("year", "month", "day"))%>%
+  separate(date, into = c("year", "month", "day"))%>%
   mutate(
    month = as.integer(month),
    month = month.name[month],
