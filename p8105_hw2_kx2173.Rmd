@@ -167,7 +167,7 @@ olivia_rank = baby_tidy%>%
     names_from = "year_of_birth",
     values_from = "rank"
   )%>%
-  select(-gender)%>%
+  select(-gender)%>% # Gender has been mentioned in table's caption.
   relocate("childs_first_name")
 
 knitr::kable(olivia_rank, caption = "Rank in popularity of the name Olivia as a female baby name")
@@ -185,7 +185,7 @@ popular_male_name = baby_tidy%>%
   select(
     -gender,
     -rank
-  )
+  ) # Gender and rank have been mentioned in table's caption.
 
 knitr::kable(popular_male_name, caption = "The most popular name among male children over time")
 ```
