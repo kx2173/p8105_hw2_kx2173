@@ -50,8 +50,6 @@ combined_precipitation =
   mutate(
     month = as.integer(month),
     month = month.name[month])
-
-class(pull(combined_precipitation, month)) # To check if "month" variable is a character variable.
 ```
 
 Write a paragraph about data:
@@ -151,12 +149,13 @@ baby_name = read_csv("./baby_names/Popular_Baby_Names.csv")%>%
 
 unique(pull(baby_name, ethnicity)) # Here we find something needs to be uniform
 
-baby_tidy = baby_name[!duplicated(baby_name), ]%>%
+baby_tidy = baby_name%>%
   mutate(
     ethnicity = recode(ethnicity, 
                        `ASIAN AND PACI` = "ASIAN AND PACIFIC ISLANDER",
                        `BLACK NON HISP` = "BLACK NON HISPANIC",
-                       `WHITE NON HISP` = "WHITE NON HISPANIC"))
+                       `WHITE NON HISP` = "WHITE NON HISPANIC"))%>%
+  distinct()
 ```
 
 Produce a table showing rank in popularity of the name "Olivia" as a female baby name.
